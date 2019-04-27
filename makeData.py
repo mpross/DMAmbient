@@ -1,4 +1,3 @@
-import nltk
 import os
 import string
 
@@ -39,7 +38,7 @@ for filename in os.listdir(directory):
 
                 if (chunk[wordIndex] == word) & (foundBool == False):
                     tavernCount += 1
-                    data.append('/tavern/')
+                    data.append('\ntavern\t')
                     for i in range(len(chunk)):
                         data.append(chunk[i])
                     foundBool = True
@@ -48,7 +47,7 @@ for filename in os.listdir(directory):
             for word in dungeonWords:
                 if (chunk[wordIndex] == word) & (foundBool == False):
                     dungeonCount += 1
-                    data.append('/dung/')
+                    data.append('\ndung\t')
                     for i in range(len(chunk)):
                         data.append(chunk[i])
                     foundBool = True
@@ -57,7 +56,7 @@ for filename in os.listdir(directory):
             for word in townWords:
                 if (chunk[wordIndex] == word) & (foundBool == False):
                     townCount += 1
-                    data.append('/town/')
+                    data.append('\ntown\t')
                     for i in range(len(chunk)):
                         data.append(chunk[i])
                     foundBool = True
@@ -65,7 +64,7 @@ for filename in os.listdir(directory):
 
         if foundBool == False:
 
-            data.append('/none/')
+            data.append('\nnone\t')
             for i in range(len(chunk)):
                 data.append(chunk[i])
             noneCount+=1
