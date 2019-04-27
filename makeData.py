@@ -2,9 +2,10 @@ import nltk
 import os
 import string
 
-tavernIndex = []
-dungeonIndex = []
-townIndex = []
+tavernCount=0
+dungeonCount=0
+townCount=0
+noneCount=0
 
 fileIndex=0
 
@@ -18,52 +19,72 @@ for filename in os.listdir(directory):
     rawData = rawData.replace('\n', ' ')
     rawData = rawData.split(' ')
 
+    data=[]
+    outdata=[]
+
     dungeonWords = ['dungeon', 'cave', 'mine', 'dark', 'damp']
     townWords = ['town', 'crowds', 'road', 'street', 'crowd', 'buildings', 'tent']
     tavernWords = ['tavern', 'drunk', 'tankard', 'bar', 'barkeep', 'inn', 'beds']
 
-    buffer = 10
+    chunkSize = 100
 
-    for chunkIndex in range(round(len(rawData)/buffer)):
+    for chunkIndex in range(round(len(rawData)/chunkSize)):
 
         foundBool = False
 
-        chunk = rawData[chunkIndex*buffer:(chunkIndex+1)*buffer]
+        chunk = rawData[chunkIndex*chunkSize:(chunkIndex+1)*chunkSize]
 
         for wordIndex in range(len(chunk)):
             for word in tavernWords:
 
                 if (chunk[wordIndex] == word) & (foundBool == False):
-                    tavernIndex.append(wordIndex)
-                    rawData.insert(chunkIndex*buffer, '/tavern/')
+                    tavernCount += 1
+                    data.append('/tavern/')
+                    for i in range(len(chunk)):
+                        data.append(chunk[i])
                     foundBool = True
                     break
 
             for word in dungeonWords:
                 if (chunk[wordIndex] == word) & (foundBool == False):
-                    dungeonIndex.append(wordIndex)
-                    rawData.insert(chunkIndex*buffer, '/dung/')
+                    dungeonCount += 1
+                    data.append('/dung/')
+                    for i in range(len(chunk)):
+                        data.append(chunk[i])
                     foundBool = True
                     break
 
             for word in townWords:
                 if (chunk[wordIndex] == word) & (foundBool == False):
-                    townIndex.append(wordIndex)
-                    rawData.insert(chunkIndex*buffer, '/town/')
+                    townCount += 1
+                    data.append('/town/')
+                    for i in range(len(chunk)):
+                        data.append(chunk[i])
                     foundBool = True
                     break
 
         if foundBool == False:
-            rawData.insert(chunkIndex*buffer, '/none/')
+
+            data.append('/none/')
+            for i in range(len(chunk)):
+                data.append(chunk[i])
+            noneCount+=1
 
     fileIndex += 1
 
-    if fileIndex >=2:
-        break
+    # if fileIndex >=2:
+    #     break
 
 
-    print(''.join(rawData))
+    for i in range(len(data)):
+        outdata.append(data[i])
+        outdata.append(' ')
 
-print(len(tavernIndex))
-print(len(dungeonIndex))
-print(len(townIndex))
+    print(''.join(outdata))
+
+    file=open('corpus/tagged/'+str(fileIndex)+'.txt', 'w+').write(''.join(outdata))
+
+print(tavernCount)
+print(dungeonCount)
+print(townCount)
+print(noneCount)
