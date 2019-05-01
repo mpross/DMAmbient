@@ -1,9 +1,13 @@
-import nltk
-import pandas as pd
 import os
 import re
 
+import nltk
+import pandas as pd
+
+from sklearn.feature_extraction.text import CountVectorizer
+
 stopword = nltk.corpus.stopwords.words('english')
+wn= nltk.WordNetLemmatizer()
 
 def tokenize(text):
 
@@ -13,6 +17,10 @@ def tokenize(text):
 def remove_stopwords(tokenezed_list):
 
     text = [word for word in tokenezed_list if word not in stopword]
+    return text
+
+def lemmatizing(tokenized_text):
+    text = [wn.lemmatize(word) for word in tokenized_text]
     return text
 
 directory = 'corpus/tagged/'
@@ -29,7 +37,12 @@ for filename in os.listdir(directory):
 
     data['body_text_nostop'] = data['body_text_tokenized'].apply(lambda x: remove_stopwords(x))
 
-    print(data.head())
+    data['body_text_lemmatized'] = data['body_text_nostop'].apply(lambda x: lemmatizing(x))
+
+    count_vect = CountVectorizer()
+    X_counts = count_vect.fit_transform(data['body_text'])
+    print(X_counts.shape)
+    print(count_vect.get_feature_names())
 
     fileIndex += 1
 
